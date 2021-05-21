@@ -13,6 +13,9 @@ Routers route chest minecarts to the correct destination based on the routing it
 The payload is processed at the destination.
 Then the cart is sent to its next destination with any response payload.
 
+This is different from a computer network because it is not easy to copy items.
+We need to design a protocol that allows autonomous network systems to operate while conserving resources.
+
 Each destination is a *function* because it has an input and output.
 These functions can be arbitrary, and we should be able to freely compose them.
 
@@ -22,6 +25,15 @@ smelt(cobblestone) => stone
 ```
 
 A minecart routed to `smelt` with a payload full of cobblestone would return with stone.
+
+A more complicated example:
+```
+set(smelt(get("cobblestone")), "stone")
+```
+
+The minecart would go to pick up cobblestone from the key-value store at key `"cobblestone"`.
+Then it would go to `smelt` and turn the cobblestone into stone.
+Finally, it would store the stone items under the `"stone"` key in the key-value store.
 
 ## Possible Functions
 
