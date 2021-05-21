@@ -10,8 +10,8 @@ We can use chest minecarts like packets in a network.
 
 The chest minecarts carry routing information and a payload.
 Routers route chest minecarts to the correct destination based on the routing items inside.
-The payload is processed at the destination.
-Then the cart is sent to its next destination with any response payload.
+A redstone machine at the destination processes the payload.
+After processing, the cart travels to its next destination with any response payload.
 
 This is different from a computer network because it is not easy to copy items.
 We need to design a protocol that allows autonomous network systems to operate while conserving resources.
