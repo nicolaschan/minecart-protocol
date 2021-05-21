@@ -141,10 +141,10 @@ def arity(arity):
 
             minecart.add_item(next_dest)
             next_args.transfer_into(minecart)
+            minecart.add_item(next_dest_box)
             for value in return_values:
                 minecart.add_item(value)
             next_dest_box.add_item(dest)
-            minecart.add_item(next_dest_box)
         return inner
     return decorator
 
@@ -195,28 +195,38 @@ def smelt_function(item_box):
     chest.transfer_into(item_box)
     return item_box
 
-@arity(27)
-def permute_function(perm, *boxes):
+def permute_function(minecart):
+    dest = minecart.pull_item()
+    perm = minecart.pull_item()
     input_items = Inventory(27)
-    for box in boxes:
-        input_items.add_item(box)
+    minecart.transfer_into(input_items)
     
-    output_items = []
-    chest = Inventory(27)
+    output_chest = Inventory(27)
+    temp_chest = Inventory(27)
+    used_perm_items = Inventory(27)
 
-    current_item = None
+    prev_item = None
     while not perm.is_empty():
         item = perm.pull_item()
-        if current_item is None:
-            current_item = item
-        elif current_item != item:
-            current_item = item
-            output_items.append(27)
-            chest.transfer_into(input_items)
+        if prev_item is None:
+            prev_item = item
+        elif prev_item != item:
+            prev_item = item
+            output_chest.add_item(input_items.pull_item())
+            temp_chest.transfer_into(input_items)
         else:
-            chest.add_item(item)
+            temp_chest.add_item(input_items.pull_item())
+        used_perm_items.add_item(item)
     
-    return output_items
+    next_dest_box = output_chest.pull_item()
+    next_dest = next_dest_box.pull_item()
+    next_dest_box.add_item(dest)
+    used_perm_items.transfer_into(perm)
+
+    minecart.add_item(next_dest)
+    output_chest.transfer_into(minecart)
+    minecart.add_item(next_dest_box)
+    minecart.add_item(perm)
 
 routes = [
     (Item("paper", name="get(2)"), get2_function),
@@ -238,17 +248,14 @@ minecart.add_item(box_items(Item("paper", name="key"), mult=2))
 minecart.add_item(box_items(Item("paper", name="permute(27)")))
 minecart.add_item(box_items(
     *[Item("paper", name="1")]*1,
-    *[Item("paper", name="2")]*4,
-    *[Item("paper", name="3")]*4,
+    *[Item("paper", name="2")]*1,
+    *[Item("paper", name="3")]*1,
     *[Item("paper", name="4")]*1,
-    *[Item("paper", name="5")]*1,
-    *[Item("paper", name="6")]*1,
-    *[Item("paper", name="7")]*1,
 ))
 
 print("Initial condition")
 print(minecart)
-i, max_iters = 0, 4
+i, max_iters = 0, 6
 while route(minecart) and i < max_iters:
     print(f"\nIteration {i+1}:")
     print(minecart)
