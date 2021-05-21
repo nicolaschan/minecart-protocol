@@ -15,6 +15,7 @@ Then the cart is sent to its next destination with any response payload.
 
 This is different from a computer network because it is not easy to copy items.
 We need to design a protocol that allows autonomous network systems to operate while conserving resources.
+There are also limitations with item sorting and stacking mechanics.
 
 Each destination is a *function* because it has an input and output.
 These functions can be arbitrary, and we should be able to freely compose them.
